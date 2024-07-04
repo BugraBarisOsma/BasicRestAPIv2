@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using WeekOneHomework.Models;
+using WeekOneHomework.Services.Abstract;
 
 namespace WeekOneHomework.Services
 {
-    public class ComputerService
+    public class ComputerService : IComputerServices
     {
         
         private readonly List<Computer> computers;

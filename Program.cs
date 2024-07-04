@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddValidatorsFromAssemblyContaining<ComputerValidation>();
- builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddControllers();
 
@@ -28,6 +28,7 @@ builder.Services.AddSwaggerGen(options =>
 
 
 });
+
 builder.Services.AddScoped<ComputerService, ComputerService>();
 
 var app = builder.Build();
