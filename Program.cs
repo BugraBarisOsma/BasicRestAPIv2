@@ -1,10 +1,16 @@
+using System;
+using System.IO;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
-using WeekOneHomework.Controllers;
-using WeekOneHomework.Services;
-using WeekOneHomework.Validation;
+using BasicRestAPI.Contexts;
+using BasicRestAPI.Controllers;
+using BasicRestAPI.Services;
+using BasicRestAPI.Validation;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +19,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<ComputerValidation>();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddControllers();
+builder.Services.AddDbContext<PostgreDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>

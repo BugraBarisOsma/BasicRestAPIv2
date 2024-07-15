@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using BasicRestAPI.Models;
+using BasicRestAPI.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WeekOneHomework.Models;
-using WeekOneHomework.Services;
 
-namespace WeekOneHomework.Controllers
+namespace BasicRestAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

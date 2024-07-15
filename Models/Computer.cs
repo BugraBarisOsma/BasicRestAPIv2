@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WeekOneHomework.Models
+namespace BasicRestAPI.Models
 {
     public class Computer
     {
@@ -9,5 +9,6 @@ namespace WeekOneHomework.Models
         public string  Brand { get; set; }
         public string  Model { get; set; }
         public int Price { get; set; }
+       
     }
 }

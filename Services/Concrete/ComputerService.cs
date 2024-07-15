@@ -1,74 +1,85 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using BasicRestAPI.Contexts;
+using BasicRestAPI.Extensions;
+using BasicRestAPI.Models;
+using BasicRestAPI.Services.Abstract;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using WeekOneHomework.Models;
-using WeekOneHomework.Services.Abstract;
+using Microsoft.EntityFrameworkCore;
 
-namespace WeekOneHomework.Services
+namespace BasicRestAPI.Services
 {
     public class ComputerService : IComputerServices
     {
-        
-        private readonly List<Computer> computers;
-        public ComputerService() {
-          computers = new List<Computer> 
-            {
-             new Computer {Id=1,Brand="Asus" , Model ="XK790",Price=28930},
-             new Computer {Id=2,Brand="Casper" , Model ="TK114",Price=25768},
-             new Computer {Id=3,Brand="MSI" , Model ="ALP178",Price=32443}
-            
-            };
+        private readonly PostgreDbContext _context;
+        private readonly HttpResponse _response;
+        public ComputerService(PostgreDbContext context,  HttpResponse response)
+        {
+            _context = context;
+            _response = response;
         }    
 
         public async Task<List<Computer>> GetAllComputer()
         {
-            return computers;
+           return _context.Computers.ToList();   
+            
         }
         public async Task<Computer> GetComputerById(int id)
         {
-            Computer computer = computers.FirstOrDefault(x => x.Id == id);
+            Computer computer = await _context.Computers.FirstOrDefaultAsync(x => x.Id == id);
+            if (computer == null)
+            {
+                _response.WriteJsonErrorAsync(404, "Computer not found");
+                
+            }
             return computer;
         }
         public async Task<List<Computer>> CreateComputer(Computer computer)
         {
             if (computer == null) 
             {
-                throw new ArgumentNullException();
+                _response.WriteJsonErrorAsync(404, "Computer not found");
             }
 
-            computers.Add(computer);
-            return computers;
+            _context.Computers.AddAsync(computer);
+            _context.SaveChangesAsync();
+            return await _context.Computers.ToListAsync();
         }
         public async Task<List<Computer>> DeleteComputer(int id)
         {
-            if (computers.Find(x => x.Id == id) == null)
+            Computer computer = await _context.Computers.FirstOrDefaultAsync(x => x.Id == id);
+            if (computer == null)
             {
-                throw new NullReferenceException();
+                _response.WriteJsonErrorAsync(404, "Computer not found");
             }
-            computers.RemoveAll(x => x.Id == id);
-            return computers;
+            
+            _context.Computers.Remove(computer);
+           await _context.SaveChangesAsync();
+           return await _context.Computers.ToListAsync();
         }
 
         public async Task<Computer> UpdateComputer(Computer computer)
         {
-            var existingComputer = computers.FirstOrDefault(x=>x.Id==computer.Id);
+            var existingComputer = await _context.Computers.FirstOrDefaultAsync(x=>x.Id==computer.Id);
             if (existingComputer == null)
             {
-                throw new NullReferenceException();
+                _response.WriteJsonErrorAsync(404, "Computer not found");
             }
             existingComputer.Id = computer.Id;  
             existingComputer.Model = computer.Model;
             existingComputer.Price = computer.Price;
-            existingComputer.Brand = computer.Brand;    
+            existingComputer.Brand = computer.Brand;
 
+           
+            await _context.SaveChangesAsync();
             return existingComputer;
 
         } 
         public async Task<Computer> PartialUpdateComputer(Computer computer)
         {
-            var existingComputer = computers.FirstOrDefault(x => x.Id == computer.Id);
+            var existingComputer = await _context.Computers.FirstOrDefaultAsync(x=>x.Id==computer.Id);
             if (existingComputer == null)
             {
-                 throw new NullReferenceException();
+                _response.WriteJsonErrorAsync(404, "Computer not found");
             }
 
             if (!string.IsNullOrEmpty(computer.Brand))
@@ -86,6 +97,7 @@ namespace WeekOneHomework.Services
                 existingComputer.Model = computer.Model;
             }
 
+            await _context.SaveChangesAsync();
             return existingComputer;
         }
 

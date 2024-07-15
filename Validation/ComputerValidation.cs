@@ -1,8 +1,8 @@
-﻿using FluentValidation;
+﻿using BasicRestAPI.Models;
+using FluentValidation;
 using FluentValidation.AspNetCore;
-using WeekOneHomework.Models;
 
-namespace WeekOneHomework.Validation
+namespace BasicRestAPI.Validation
 {
     public class ComputerValidation : AbstractValidator<Computer>
     {

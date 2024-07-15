@@ -1,6 +1,6 @@
-using WeekOneHomework.Models;
+using BasicRestAPI.Models;
 
-namespace WeekOneHomework.Services.Abstract;
+namespace BasicRestAPI.Services.Abstract;
 
 public interface IComputerServices
 {
