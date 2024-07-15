@@ -11,8 +11,8 @@ namespace BasicRestAPI.Services
     public class ComputerService : IComputerServices
     {
         private readonly PostgreDbContext _context;
-        private readonly HttpResponse _response;
-        public ComputerService(PostgreDbContext context,  HttpResponse response)
+        private readonly IHttpContextAccessor _response;
+        public ComputerService(PostgreDbContext context,  IHttpContextAccessor response)
         {
             _context = context;
             _response = response;
@@ -28,7 +28,7 @@ namespace BasicRestAPI.Services
             Computer computer = await _context.Computers.FirstOrDefaultAsync(x => x.Id == id);
             if (computer == null)
             {
-                _response.WriteJsonErrorAsync(404, "Computer not found");
+                _response.HttpContext.Response.WriteJsonErrorAsync(404, "Computer not found");
                 
             }
             return computer;
@@ -37,7 +37,7 @@ namespace BasicRestAPI.Services
         {
             if (computer == null) 
             {
-                _response.WriteJsonErrorAsync(404, "Computer not found");
+                _response.HttpContext.Response.WriteJsonErrorAsync(404, "Computer not found");
             }
 
             _context.Computers.AddAsync(computer);
@@ -49,7 +49,7 @@ namespace BasicRestAPI.Services
             Computer computer = await _context.Computers.FirstOrDefaultAsync(x => x.Id == id);
             if (computer == null)
             {
-                _response.WriteJsonErrorAsync(404, "Computer not found");
+                _response.HttpContext.Response.WriteJsonErrorAsync(404, "Computer not found");
             }
             
             _context.Computers.Remove(computer);
@@ -62,7 +62,7 @@ namespace BasicRestAPI.Services
             var existingComputer = await _context.Computers.FirstOrDefaultAsync(x=>x.Id==computer.Id);
             if (existingComputer == null)
             {
-                _response.WriteJsonErrorAsync(404, "Computer not found");
+                _response.HttpContext.Response.WriteJsonErrorAsync(404, "Computer not found");
             }
             existingComputer.Id = computer.Id;  
             existingComputer.Model = computer.Model;
@@ -79,7 +79,7 @@ namespace BasicRestAPI.Services
             var existingComputer = await _context.Computers.FirstOrDefaultAsync(x=>x.Id==computer.Id);
             if (existingComputer == null)
             {
-                _response.WriteJsonErrorAsync(404, "Computer not found");
+                _response.HttpContext.Response.WriteJsonErrorAsync(404, "Computer not found");
             }
 
             if (!string.IsNullOrEmpty(computer.Brand))

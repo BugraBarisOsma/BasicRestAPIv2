@@ -6,7 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using BasicRestAPI.Contexts;
 using BasicRestAPI.Controllers;
+using BasicRestAPI.Middlewares;
 using BasicRestAPI.Services;
+using BasicRestAPI.Services.Abstract;
 using BasicRestAPI.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -36,7 +38,8 @@ builder.Services.AddSwaggerGen(options =>
 
 });
 
-builder.Services.AddScoped<ComputerService, ComputerService>();
+builder.Services.AddScoped<IComputerServices, ComputerService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
@@ -49,6 +52,8 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Computer API");
     });
 }
+
+app.UseMiddleware<LoggingMiddleware>();
 
 app.UseHttpsRedirection();
 
